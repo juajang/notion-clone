@@ -1,13 +1,20 @@
 import React from "react";
-import Header from "@components/Header";
+import styled from "styled-components";
+import { Title } from "@components/header";
 
 const Page = () => {
   return (
-    <>
-      <h1> Page </h1>
-      <Header />
-    </>
+    <Container>
+      <Title />
+    </Container>
   );
 };
+
+const Container = styled.div`
+  display: grid;
+  place-items: center;
+  padding: 5rem calc(96px + env(safe-area-inset-right)) 5rem
+    calc(96px + env(safe-area-inset-left));
+`;
 
 export default Page;
