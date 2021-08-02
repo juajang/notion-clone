@@ -1,7 +1,8 @@
 import ContentEditable from "react-contenteditable";
 import { Block } from "@src/types/content";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import * as React from "react";
+import Page from "@src/pages/Page";
 
 interface EditableBlockProps {
   id: string;
@@ -27,7 +28,7 @@ const EditableBlock = (props: EditableBlockProps) => {
   const [htmlBackup, setHtmlBackup] = useState("");
   const [previousKey, setPreviousKey] = useState("");
 
-  function onKeyDown(e: any) {
+  function handleKeydown(e: any) {
     if (e.key === "/") {
       setHtmlBackup(html);
     }
@@ -38,8 +39,10 @@ const EditableBlock = (props: EditableBlockProps) => {
         ref: editableBlockRef.current,
       });
     }
-    console.log(html, html.length);
-    if (html.length === 0 && e.key === "Backspace") {
+    if (
+      editableBlockRef.current.innerHTML.length === 0 &&
+      e.key === "Backspace"
+    ) {
       e.preventDefault();
       deleteBlock({
         id,
@@ -49,8 +52,13 @@ const EditableBlock = (props: EditableBlockProps) => {
     setPreviousKey(e.key);
   }
 
-  const onChange = (e: any) => {
+  const handleChange = (e: any) => {
     setHtml(e.target.value);
+    updateBlock({
+      html: e.target.value,
+      tag,
+      id,
+    });
   };
 
   return (
@@ -58,8 +66,8 @@ const EditableBlock = (props: EditableBlockProps) => {
       html={html}
       innerRef={editableBlockRef}
       tagName={tag}
-      onChange={onChange}
-      onKeyDown={onKeyDown}
+      onChange={handleChange}
+      onKeyDown={handleKeydown}
     />
   );
 };

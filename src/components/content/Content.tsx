@@ -23,10 +23,8 @@ const Content = ({ blocks, setBlocks }: ContentProps) => {
       }
       if (command === "add" && "ref" in currentBlock) {
         const nextBlock = currentBlock.ref?.nextElementSibling as HTMLElement;
-        nextBlock.focus();
-        console.log("add", currentBlock.ref?.previousElementSibling);
+        nextBlock?.focus();
       } else if (command === "delete" && "focus" in currentBlock) {
-        console.log("delete", currentBlock);
         setCaretToEnd(currentBlock);
         currentBlock?.focus();
       }
