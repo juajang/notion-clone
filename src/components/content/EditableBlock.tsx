@@ -1,8 +1,7 @@
 import ContentEditable from "react-contenteditable";
 import { Block } from "@src/types/content";
-import { useEffect, useRef, useState } from "react";
-import * as React from "react";
-import Page from "@src/pages/Page";
+import { useRef, useState } from "react";
+import React from "react";
 
 interface EditableBlockProps {
   id: string;
@@ -29,6 +28,7 @@ const EditableBlock = (props: EditableBlockProps) => {
   const [previousKey, setPreviousKey] = useState("");
 
   function handleKeydown(e: any) {
+    const editableBlockElement = editableBlockRef.current;
     if (e.key === "/") {
       setHtmlBackup(html);
     }
@@ -36,17 +36,14 @@ const EditableBlock = (props: EditableBlockProps) => {
       e.preventDefault();
       addBlock({
         id,
-        ref: editableBlockRef.current,
+        ref: editableBlockElement,
       });
     }
-    if (
-      editableBlockRef.current.innerHTML.length === 0 &&
-      e.key === "Backspace"
-    ) {
+    if (editableBlockElement.innerHTML.length === 0 && e.key === "Backspace") {
       e.preventDefault();
       deleteBlock({
         id,
-        ref: editableBlockRef.current,
+        ref: editableBlockElement,
       });
     }
     setPreviousKey(e.key);
