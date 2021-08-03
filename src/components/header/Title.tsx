@@ -17,8 +17,6 @@ const Title = () => {
 const Input = styled.input`
   min-height: 1em;
   cursor: text;
-  padding: 5rem calc(96px + env(safe-area-inset-right)) 1rem
-    calc(96px + env(safe-area-inset-left));
   white-space: pre-wrap;
   word-break: break-word;
   font-weight: 700;

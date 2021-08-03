@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
+import { Popover } from "@src/components/common";
 import { Menu } from "@src/types/content";
 
 const allowedTags = [
@@ -54,23 +55,16 @@ const SelectMenu = ({ xPosition, yPosition, close }: SelectMenuProps) => {
   }, []);
 
   return (
-    <StyledMenu xPosition={xPosition} yPosition={yPosition}>
+    <Popover xPosition={xPosition} yPosition={yPosition}>
       <h1> Select Menu </h1>
       <List>
         {matchedItems.map((item) => (
           <li key={item.id}>{item.label}</li>
         ))}
       </List>
-    </StyledMenu>
+    </Popover>
   );
 };
-
-const StyledMenu = styled.div<{ xPosition?: number; yPosition?: number }>`
-  width: 500px;
-  position: absolute;
-  top: ${(props) => props.yPosition}
-  left: ${(props) => props.xPosition}
-`;
 
 const List = styled.ul``;
 

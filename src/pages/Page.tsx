@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { Title } from "@components/header";
+import Header from "@components/header";
 import { uid } from "@src/utils/utils";
 import EditablePage from "@components/editablePage/EditablePage";
 import { Blocks } from "@src/types/content";
@@ -13,7 +13,9 @@ const Page = () => {
   return (
     <Container>
       <Content>
-        <Title />
+        <Header>
+          <Header.Title />
+        </Header>
         <EditablePage blocks={blocks} setBlocks={setBlocks} />
       </Content>
     </Container>
