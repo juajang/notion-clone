@@ -23,9 +23,9 @@ const Input = styled.input`
   line-height: 1.2;
   font-size: 40px;
   -webkit-text-fill-color: ${palette.black0};
-  caret-color: ${palette.grey2};
+  caret-color: ${palette.grey3};
   ::-webkit-input-placeholder {
-    -webkit-text-fill-color: ${palette.grey0};
+    -webkit-text-fill-color: ${palette.grey1};
   }
 `;
 

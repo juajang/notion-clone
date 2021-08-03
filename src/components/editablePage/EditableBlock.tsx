@@ -3,6 +3,7 @@ import { Block, Menu } from "@src/types/content";
 import { KeyboardEvent, useRef, useState } from "react";
 import React from "react";
 import SelectMenu from "@components/editablePage/SelectMenu";
+import { getCaretCoordinates } from "@src/utils/utils";
 
 interface EditableBlockProps {
   id: string;
@@ -54,10 +55,11 @@ const EditableBlock = (props: EditableBlockProps) => {
   }
 
   function openSelectMenu() {
+    const { x, y } = getCaretCoordinates();
     setSelectMenu({
       isOpen: true,
-      xPosition: 0,
-      yPosition: 0,
+      xPosition: x,
+      yPosition: y,
     });
   }
 

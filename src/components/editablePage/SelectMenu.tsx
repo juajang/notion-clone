@@ -57,14 +57,17 @@ const SelectMenu = ({ xPosition, yPosition, close }: SelectMenuProps) => {
     return () => {
       window.removeEventListener("keydown", handleKeydown);
     };
-  }, []);
+  }, [close, command]);
 
   return (
-    <Popover xPosition={xPosition} yPosition={yPosition}>
+    <Popover
+      left={xPosition && xPosition + 20}
+      top={yPosition && yPosition + 26}
+    >
       <H3> 기본 블록 </H3>
       <List>
         {matchedItems.map((item) => (
-          <li key={item.id}>
+          <li key={item.id} role="button" tabIndex={0}>
             {item.label} <span> {item.subLabel}</span>
           </li>
         ))}
@@ -74,9 +77,9 @@ const SelectMenu = ({ xPosition, yPosition, close }: SelectMenuProps) => {
 };
 
 const H3 = styled.h3`
-  color: ${palette.grey1};
+  color: ${palette.grey2};
   font-size: 12px;
-  padding: 0.5rem 0;
+  padding: 1rem;
 `;
 
 const List = styled.ul`
@@ -84,13 +87,17 @@ const List = styled.ul`
     display: flex;
     flex-direction: column;
     font-size: 14px;
-    padding: 0.5rem 0;
+    padding: 0.5rem 1rem;
+
+    &:hover {
+      background-color: ${palette.grey0};
+    }
   }
 
   span {
     padding: 6px 0;
     font-size: 12px;
-    color: ${palette.grey1};
+    color: ${palette.grey2};
   }
 `;
 

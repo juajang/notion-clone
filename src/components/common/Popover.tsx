@@ -4,30 +4,43 @@ import palette from "@src/utils/palette";
 
 interface PopoverProps {
   children?: ReactNode;
-  xPosition?: number;
-  yPosition?: number;
+  top?: number;
+  left?: number;
 }
 
-const Popover = ({ children, xPosition, yPosition }: PopoverProps) => {
+const Popover = ({ children, top, left }: PopoverProps) => {
   return (
-    <Container xPosition={xPosition} yPosition={yPosition}>
+    <Container top={top} left={left}>
       {children}
     </Container>
   );
 };
 
-const Container = styled.div<{ xPosition?: number; yPosition?: number }>`
+const Container = styled.div<{ top?: number; left?: number }>`
   width: 300px;
   max-height: 300px;
   overflow: auto;
-  padding: 1rem;
   background: white;
   position: absolute;
   z-index: 100;
-  top: ${(props) => props.yPosition};
-  left: ${(props) => props.xPosition};
+  top: ${(props) => props.top}px;
+  left: ${(props) => props.left}px;
   border-radius: 3px;
   box-shadow: ${palette.boxShadow};
+  animation: pop 0.2s ease-in-out;
+  transform-origin: top left;
+
+  @keyframes pop {
+    0% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.02);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
 `;
 
 export default Popover;

@@ -55,7 +55,7 @@ const EditablePage = ({ blocks, setBlocks }: EditablePageProps) => {
       currentBlock,
     });
   }
-  console.log(blocks);
+
   function deleteBlock(currentBlock: Block) {
     const previousBlock = currentBlock.ref
       ?.previousElementSibling as HTMLElement;
@@ -97,6 +97,10 @@ const Container = styled.div`
     background-color: ${palette.grey0};
     margin: 1rem 0;
     padding: 5px;
+
+    &:focus {
+      outline: 0;
+    }
   }
 `;
 
