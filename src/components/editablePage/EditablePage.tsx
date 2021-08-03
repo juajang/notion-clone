@@ -2,15 +2,15 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { Block, Blocks, EditMode } from "@src/types/content";
 import { setCaretToEnd, uid } from "@src/utils/utils";
-import EditableBlock from "@components/content/EditableBlock";
+import EditableBlock from "@components/editablePage/EditableBlock";
 import palette from "@src/utils/palette";
 
-interface ContentProps {
+interface EditablePageProps {
   blocks: Blocks;
   setBlocks: (blocks: Blocks) => void;
 }
 
-const Content = ({ blocks, setBlocks }: ContentProps) => {
+const EditablePage = ({ blocks, setBlocks }: EditablePageProps) => {
   const [editMode, setEditMode] = useState<EditMode>({
     command: "",
   });
@@ -89,16 +89,15 @@ const Content = ({ blocks, setBlocks }: ContentProps) => {
 };
 
 const Container = styled.div`
-  padding: 1rem 0;
   font-size: 16px;
-  width: 100%;
+  padding: 0 calc(96px + env(safe-area-inset-right)) 0
+    calc(96px + env(safe-area-inset-left));
 
   [contenteditable="true"] {
-    width: 100%;
     background-color: ${palette.grey0};
     margin: 1rem 0;
     padding: 5px;
   }
 `;
 
-export default Content;
+export default EditablePage;

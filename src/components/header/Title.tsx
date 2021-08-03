@@ -15,18 +15,20 @@ const Title = () => {
 };
 
 const Input = styled.input`
-  max-width: 100%;
-  width: 100%;
   min-height: 1em;
   cursor: text;
+  padding: 5rem calc(96px + env(safe-area-inset-right)) 1rem
+    calc(96px + env(safe-area-inset-left));
   white-space: pre-wrap;
   word-break: break-word;
-  color: ${palette.grey0};
-  caret-color: ${palette.grey1};
-  -webkit-text-fill-color: ${palette.grey0};
   font-weight: 700;
   line-height: 1.2;
   font-size: 40px;
+  -webkit-text-fill-color: ${palette.black0};
+  caret-color: ${palette.grey1};
+  ::-webkit-input-placeholder {
+    -webkit-text-fill-color: ${palette.grey0};
+  }
 `;
 
 export default Title;

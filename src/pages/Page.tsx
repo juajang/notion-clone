@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { Title } from "@components/header";
 import { uid } from "@src/utils/utils";
-import Content from "@components/content/Content";
+import EditablePage from "@components/editablePage/EditablePage";
 import { Blocks } from "@src/types/content";
 
 const initialBlock = { id: uid(), html: "", tag: "p" };
@@ -12,8 +12,10 @@ const Page = () => {
 
   return (
     <Container>
-      <Title />
-      <Content blocks={blocks} setBlocks={setBlocks} />
+      <Content>
+        <Title />
+        <EditablePage blocks={blocks} setBlocks={setBlocks} />
+      </Content>
     </Container>
   );
 };
@@ -21,10 +23,12 @@ const Page = () => {
 const Container = styled.div`
   display: grid;
   place-items: center;
+  width: 100%;
+`;
+
+const Content = styled.div`
   width: 900px;
   max-width: 100%;
-  padding: 5rem calc(96px + env(safe-area-inset-right)) 5rem
-    calc(96px + env(safe-area-inset-left));
 `;
 
 export default Page;
