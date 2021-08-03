@@ -23,7 +23,7 @@ const Input = styled.input`
   line-height: 1.2;
   font-size: 40px;
   -webkit-text-fill-color: ${palette.black0};
-  caret-color: ${palette.grey1};
+  caret-color: ${palette.grey2};
   ::-webkit-input-placeholder {
     -webkit-text-fill-color: ${palette.grey0};
   }

@@ -1,5 +1,6 @@
 import React, { ReactNode } from "react";
 import styled from "styled-components";
+import palette from "@src/utils/palette";
 
 interface PopoverProps {
   children?: ReactNode;
@@ -16,10 +17,17 @@ const Popover = ({ children, xPosition, yPosition }: PopoverProps) => {
 };
 
 const Container = styled.div<{ xPosition?: number; yPosition?: number }>`
-  width: 500px;
+  width: 300px;
+  max-height: 300px;
+  overflow: auto;
+  padding: 1rem;
+  background: white;
   position: absolute;
+  z-index: 100;
   top: ${(props) => props.yPosition};
   left: ${(props) => props.xPosition};
+  border-radius: 3px;
+  box-shadow: ${palette.boxShadow};
 `;
 
 export default Popover;

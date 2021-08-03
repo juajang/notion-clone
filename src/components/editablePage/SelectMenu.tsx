@@ -2,27 +2,32 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { Popover } from "@src/components/common";
 import { Menu } from "@src/types/content";
+import palette from "@src/utils/palette";
 
 const allowedTags = [
   {
     id: "page-title",
     tag: "h1",
-    label: "Page Title",
+    label: "제목1",
+    subLabel: "섹션 제목(대)",
   },
   {
     id: "heading",
     tag: "h2",
-    label: "Heading",
+    label: "제목2",
+    subLabel: "섹션 제목(중)",
   },
   {
     id: "subheading",
     tag: "h3",
-    label: "Subheading",
+    label: "제목3",
+    subLabel: "섹션 제목(소)",
   },
   {
     id: "paragraph",
     tag: "p",
-    label: "Paragraph",
+    label: "텍스트",
+    subLabel: "일반 텍스트를 사용해 쓰기를 시작하세요.",
   },
 ];
 
@@ -56,16 +61,37 @@ const SelectMenu = ({ xPosition, yPosition, close }: SelectMenuProps) => {
 
   return (
     <Popover xPosition={xPosition} yPosition={yPosition}>
-      <h1> Select Menu </h1>
+      <H3> 기본 블록 </H3>
       <List>
         {matchedItems.map((item) => (
-          <li key={item.id}>{item.label}</li>
+          <li key={item.id}>
+            {item.label} <span> {item.subLabel}</span>
+          </li>
         ))}
       </List>
     </Popover>
   );
 };
 
-const List = styled.ul``;
+const H3 = styled.h3`
+  color: ${palette.grey1};
+  font-size: 12px;
+  padding: 0.5rem 0;
+`;
+
+const List = styled.ul`
+  li {
+    display: flex;
+    flex-direction: column;
+    font-size: 14px;
+    padding: 0.5rem 0;
+  }
+
+  span {
+    padding: 6px 0;
+    font-size: 12px;
+    color: ${palette.grey1};
+  }
+`;
 
 export default SelectMenu;

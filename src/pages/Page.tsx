@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import Header from "@components/header";
 import { uid } from "@src/utils/utils";
-import EditablePage from "@components/editablePage/EditablePage";
+import EditablePage from "@components/editablePage";
 import { Blocks } from "@src/types/content";
 
 const initialBlock = { id: uid(), html: "", tag: "p" };
