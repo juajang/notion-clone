@@ -5,9 +5,15 @@ export interface Block {
   ref?: HTMLElement;
 }
 
+export type Blocks = Array<Block>;
+
 export interface EditMode {
   command: "add" | "delete" | "update" | "";
   currentBlock?: Block | HTMLElement;
 }
 
-export type Blocks = Array<Block>;
+export interface Menu {
+  isOpen: boolean;
+  xPosition?: number;
+  yPosition?: number;
+}

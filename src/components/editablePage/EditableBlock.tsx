@@ -1,7 +1,8 @@
 import ContentEditable from "react-contenteditable";
-import { Block } from "@src/types/content";
-import { useRef, useState } from "react";
+import { Block, Menu } from "@src/types/content";
+import { KeyboardEvent, useRef, useState } from "react";
 import React from "react";
+import SelectMenu from "@components/editablePage/SelectMenu";
 
 interface EditableBlockProps {
   id: string;
@@ -26,8 +27,11 @@ const EditableBlock = (props: EditableBlockProps) => {
   const [tag, setTag] = useState(initialTag);
   const [htmlBackup, setHtmlBackup] = useState("");
   const [previousKey, setPreviousKey] = useState("");
+  const [selectMenu, setSelectMenu] = useState<Menu>({
+    isOpen: false,
+  });
 
-  function handleKeydown(e: any) {
+  function handleKeyDown(e: KeyboardEvent<HTMLDivElement>) {
     const editableBlockElement = editableBlockRef.current;
     if (e.key === "/") {
       setHtmlBackup(html);
@@ -49,6 +53,26 @@ const EditableBlock = (props: EditableBlockProps) => {
     setPreviousKey(e.key);
   }
 
+  function openSelectMenu() {
+    setSelectMenu({
+      isOpen: true,
+      xPosition: 0,
+      yPosition: 0,
+    });
+  }
+
+  function closeSelectMenu() {
+    setSelectMenu({
+      isOpen: false,
+    });
+  }
+
+  function handleKeyUp(e: KeyboardEvent<HTMLDivElement>) {
+    if (e.key === "/") {
+      openSelectMenu();
+    }
+  }
+
   const handleChange = (e: any) => {
     setHtml(e.target.value);
     updateBlock({
@@ -59,13 +83,24 @@ const EditableBlock = (props: EditableBlockProps) => {
   };
 
   return (
-    <ContentEditable
-      html={html}
-      innerRef={editableBlockRef}
-      tagName={tag}
-      onChange={handleChange}
-      onKeyDown={handleKeydown}
-    />
+    <>
+      {selectMenu.isOpen && (
+        <SelectMenu
+          isOpen={selectMenu.isOpen}
+          close={closeSelectMenu}
+          xPosition={selectMenu.xPosition}
+          yPosition={selectMenu.yPosition}
+        />
+      )}
+      <ContentEditable
+        html={html}
+        innerRef={editableBlockRef}
+        tagName={tag}
+        onChange={handleChange}
+        onKeyDown={handleKeyDown}
+        onKeyUp={handleKeyUp}
+      />
+    </>
   );
 };
 

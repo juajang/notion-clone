@@ -55,7 +55,7 @@ const EditablePage = ({ blocks, setBlocks }: EditablePageProps) => {
       currentBlock,
     });
   }
-
+  console.log(blocks);
   function deleteBlock(currentBlock: Block) {
     const previousBlock = currentBlock.ref
       ?.previousElementSibling as HTMLElement;
