@@ -17,3 +17,10 @@ export interface Menu {
   xPosition?: number;
   yPosition?: number;
 }
+
+export interface Tag {
+  id: string;
+  tag: string;
+  label: string;
+  subLabel: string;
+}

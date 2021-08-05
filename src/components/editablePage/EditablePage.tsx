@@ -44,8 +44,12 @@ const EditablePage = ({ blocks, setBlocks }: EditablePageProps) => {
     setBlocks(updatedBlocks);
   }
 
-  function addBlock(currentBlock: Block) {
-    const newBlock = { id: uid(), html: "", tag: "p" };
+  function addBlock(currentBlock: Block, tag?: string) {
+    const newBlock = {
+      id: uid(),
+      html: "",
+      tag: tag ?? "p",
+    };
     const index = blocks.map((block) => block.id).indexOf(currentBlock.id);
     const updatedBlocks = [...blocks];
     updatedBlocks.splice(index + 1, 0, newBlock);
@@ -100,6 +104,10 @@ const Container = styled.div`
 
     &:focus {
       outline: 0;
+    }
+
+    h1 {
+      font-size: 16px;
     }
   }
 `;
