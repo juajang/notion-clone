@@ -2,10 +2,15 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import Header from "@components/header";
 import { uid } from "@src/utils/utils";
-import EditablePage from "@components/editablePage";
-import { Blocks } from "@src/types/content";
+import Editable from "@components/editablePage";
+import { Blocks } from "@src/types/editable";
 
-const initialBlock = { id: uid(), html: "", tag: "p" };
+const initialBlock = {
+  id: uid(),
+  html: "",
+  tag: "p",
+  placeholder: "",
+};
 
 const Page = () => {
   const [blocks, setBlocks] = useState<Blocks>([initialBlock]);
@@ -16,7 +21,9 @@ const Page = () => {
         <Header>
           <Header.Title />
         </Header>
-        <EditablePage blocks={blocks} setBlocks={setBlocks} />
+        <Editable>
+          <Editable.Page blocks={blocks} setBlocks={setBlocks} />
+        </Editable>
       </Content>
     </Container>
   );

@@ -1,16 +1,17 @@
 import ContentEditable from "react-contenteditable";
-import { Block, Menu } from "@src/types/content";
+import { Block, Menu, Tag } from "@src/types/editable";
 import { KeyboardEvent, useEffect, useRef, useState } from "react";
 import React from "react";
 import SelectMenu from "@components/editablePage/SelectMenu";
-import { getCaretCoordinates } from "@src/utils/utils";
+import { getCaretCoordinates, uid } from "@src/utils/utils";
 
 interface EditableBlockProps {
   id: string;
   html?: string;
   tag?: string;
+  placeholder?: string;
   updateBlock: (block: Block) => void;
-  addBlock: (block: Block, tag?: string) => void;
+  addBlock: (block: Block, tag: Tag) => void;
   deleteBlock: (block: Block) => void;
 }
 
@@ -21,6 +22,7 @@ const EditableBlock = (props: EditableBlockProps) => {
     tag: initialTag = "p",
     updateBlock,
     addBlock,
+    placeholder,
     deleteBlock,
   } = props;
   const editableBlockRef = useRef<any>();
@@ -39,10 +41,16 @@ const EditableBlock = (props: EditableBlockProps) => {
     }
     if (e.key === "Enter" && previousKey !== "Shift") {
       e.preventDefault();
-      addBlock({
-        id,
-        ref: editableBlockElement,
-      });
+      addBlock(
+        {
+          id,
+          ref: editableBlockElement,
+        },
+        {
+          id: uid(),
+          tag: "p",
+        }
+      );
     }
     if (editableBlockElement.innerHTML.length === 0 && e.key === "Backspace") {
       e.preventDefault();
@@ -75,7 +83,7 @@ const EditableBlock = (props: EditableBlockProps) => {
     }
   }
 
-  function selectTag(tag: string) {
+  function selectTag(tag: Tag) {
     setHtml(htmlBackup);
     addBlock(
       {
@@ -113,6 +121,7 @@ const EditableBlock = (props: EditableBlockProps) => {
       <ContentEditable
         html={html}
         innerRef={editableBlockRef}
+        data-placeholder={placeholder}
         tagName={tag}
         onChange={handleChange}
         onKeyDown={handleKeyDown}

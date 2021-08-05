@@ -3,6 +3,7 @@ export interface Block {
   html?: string;
   tag?: string;
   ref?: HTMLElement;
+  placeholder?: string;
 }
 
 export type Blocks = Array<Block>;
@@ -21,6 +22,7 @@ export interface Menu {
 export interface Tag {
   id: string;
   tag: string;
-  label: string;
-  subLabel: string;
+  label?: string;
+  subLabel?: string;
+  placeholder?: string;
 }

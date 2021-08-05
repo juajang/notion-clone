@@ -58,6 +58,6 @@ input {
     border: none;
 }
 
-input:focus {
+:focus {
     outline: none;
 }

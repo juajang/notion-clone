@@ -1,9 +1,8 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { Popover } from "@src/components/common";
-import { Menu } from "@src/types/content";
+import { Menu } from "@src/types/editable";
 import palette from "@src/utils/palette";
-import { matchSorter } from "match-sorter";
 
 const allowedTags = [
   {
@@ -29,12 +28,13 @@ const allowedTags = [
     tag: "p",
     label: "텍스트",
     subLabel: "일반 텍스트를 사용해 쓰기를 시작하세요.",
+    placeholder: "",
   },
 ];
 
 interface SelectMenuProps extends Menu {
   close: () => void;
-  selectItem: (item: string) => void;
+  selectItem: Function;
 }
 
 const SelectMenu = (props: SelectMenuProps) => {
@@ -48,7 +48,7 @@ const SelectMenu = (props: SelectMenuProps) => {
       switch (e.key) {
         case "Enter":
           e.preventDefault();
-          selectItem(matchedItems[selectedItemIndex].tag);
+          selectItem(matchedItems[selectedItemIndex]);
           break;
         case "Backspace":
           if (!command) {
@@ -66,6 +66,7 @@ const SelectMenu = (props: SelectMenuProps) => {
           break;
         case "ArrowDown":
         case "Tab":
+          e.preventDefault();
           setSelectedItemIndex(
             selectedItemIndex === matchedItems.length - 1
               ? 0
@@ -86,13 +87,12 @@ const SelectMenu = (props: SelectMenuProps) => {
 
   return (
     <Popover left={xPosition && xPosition} top={yPosition && yPosition + 26}>
-      <H3> 기본 블록 </H3>
+      <H4> 기본 블록 </H4>
       <ul>
         {matchedItems.map((item, index) => (
           <Li
-            key={item.id}
+            key={index}
             role="button"
-            tabIndex={0}
             isSelected={selectedItemIndex === index}
             onClick={() => {
               selectItem(item.tag);
@@ -107,7 +107,7 @@ const SelectMenu = (props: SelectMenuProps) => {
   );
 };
 
-const H3 = styled.h3`
+const H4 = styled.h4`
   color: ${palette.grey2};
   font-size: 12px;
   padding: 1rem;

@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from "react";
-import styled from "styled-components";
-import { Block, Blocks, EditMode } from "@src/types/content";
+import { Block, Blocks, EditMode, Tag } from "@src/types/editable";
 import { setCaretToEnd, uid } from "@src/utils/utils";
 import EditableBlock from "@components/editablePage/EditableBlock";
-import palette from "@src/utils/palette";
 
 interface EditablePageProps {
   blocks: Blocks;
@@ -44,11 +42,12 @@ const EditablePage = ({ blocks, setBlocks }: EditablePageProps) => {
     setBlocks(updatedBlocks);
   }
 
-  function addBlock(currentBlock: Block, tag?: string) {
+  function addBlock(currentBlock: Block, tag: Tag) {
     const newBlock = {
       id: uid(),
       html: "",
-      tag: tag ?? "p",
+      tag: tag.tag,
+      placeholder: tag.placeholder ?? tag.label,
     };
     const index = blocks.map((block) => block.id).indexOf(currentBlock.id);
     const updatedBlocks = [...blocks];
@@ -76,40 +75,21 @@ const EditablePage = ({ blocks, setBlocks }: EditablePageProps) => {
   }
 
   return (
-    <Container>
+    <>
       {blocks.map((block) => (
         <EditableBlock
           id={block.id}
           key={block.id}
           html={block.html}
           tag={block.tag}
+          placeholder={block.placeholder}
           updateBlock={updateBlock}
           addBlock={addBlock}
           deleteBlock={deleteBlock}
         />
       ))}
-    </Container>
+    </>
   );
 };
-
-const Container = styled.div`
-  font-size: 16px;
-  padding: 0 calc(96px + env(safe-area-inset-right)) 0
-    calc(96px + env(safe-area-inset-left));
-
-  [contenteditable="true"] {
-    background-color: ${palette.grey0};
-    margin: 1rem 0;
-    padding: 5px;
-
-    &:focus {
-      outline: 0;
-    }
-
-    h1 {
-      font-size: 16px;
-    }
-  }
-`;
 
 export default EditablePage;
