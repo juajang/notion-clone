@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import palette from "@src/utils/palette";
-import EditablePage from "@components/editablePage/EditablePage";
+import EditablePage from "@components/editable/EditablePage";
 
 const Editable: any = styled.main`
   font-size: 16px;
@@ -8,7 +8,7 @@ const Editable: any = styled.main`
     calc(96px + env(safe-area-inset-left));
 
   [contenteditable="true"] {
-    margin: 1rem 0;
+    margin: 5px 0;
     padding: 3px 2px;
     white-space: pre-wrap;
     word-break: break-word;

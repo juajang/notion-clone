@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import Header from "@components/header";
 import { uid } from "@src/utils/utils";
-import Editable from "@components/editablePage";
+import Editable from "@components/editable";
 import { Blocks } from "@src/types/editable";
 
 const initialBlock = {

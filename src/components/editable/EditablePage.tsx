@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Block, Blocks, EditMode, Tag } from "@src/types/editable";
+import { Block, Blocks, Tag } from "@src/types/editable";
 import { setCaretToEnd, uid } from "@src/utils/utils";
-import EditableBlock from "@components/editablePage/EditableBlock";
+import EditableBlock from "@components/editable/EditableBlock";
+import { usePrevious } from "@src/hooks/usePrevious";
 
 interface EditablePageProps {
   blocks: Blocks;
@@ -9,27 +10,41 @@ interface EditablePageProps {
 }
 
 const EditablePage = ({ blocks, setBlocks }: EditablePageProps) => {
-  const [editMode, setEditMode] = useState<EditMode>({
-    command: "",
-  });
+  const prevBlocks = usePrevious(blocks);
+  const [currentBlockId, setCurrentBlockId] = useState("0");
 
   useEffect(() => {
-    const setFocus = () => {
-      const { currentBlock, command } = editMode;
-      if (!currentBlock) {
-        return;
-      }
-      if (command === "add" && "ref" in currentBlock) {
-        const nextBlock = currentBlock.ref?.nextElementSibling as HTMLElement;
-        nextBlock?.focus();
-      } else if (command === "delete" && "focus" in currentBlock) {
-        setCaretToEnd(currentBlock);
-        currentBlock?.focus();
-      }
-    };
+    if (!prevBlocks) {
+      return;
+    }
 
-    setFocus();
-  }, [blocks, editMode]);
+    // focus to new block
+    if (prevBlocks.length + 1 === blocks.length) {
+      const nextBlockPosition =
+        blocks.map((b) => b.id).indexOf(currentBlockId) + 1;
+      const nextBlock: any = document.querySelector(
+        `[data-position="${nextBlockPosition}"]`
+      );
+      console.log(nextBlock, nextBlockPosition, "nex");
+      if (nextBlock) {
+        console.log("focus");
+        nextBlock.focus();
+      }
+    }
+
+    // focus to previous block
+    else if (prevBlocks.length - 1 === blocks.length) {
+      const lastBlockPosition = prevBlocks
+        .map((b) => b.id)
+        .indexOf(currentBlockId);
+      const lastBlock = document.querySelector(
+        `[data-position="${lastBlockPosition - 1}"]`
+      ) as HTMLElement;
+      if (lastBlock) {
+        setCaretToEnd(lastBlock);
+      }
+    }
+  }, [blocks, currentBlockId, prevBlocks]);
 
   function updateBlock(updatedBlock: Block) {
     const index = blocks.map((block) => block.id).indexOf(updatedBlock.id);
@@ -43,6 +58,7 @@ const EditablePage = ({ blocks, setBlocks }: EditablePageProps) => {
   }
 
   function addBlock(currentBlock: Block, tag: Tag) {
+    setCurrentBlockId(currentBlock.id);
     const newBlock = {
       id: uid(),
       html: "",
@@ -53,24 +69,15 @@ const EditablePage = ({ blocks, setBlocks }: EditablePageProps) => {
     const updatedBlocks = [...blocks];
     updatedBlocks.splice(index + 1, 0, newBlock);
     setBlocks(updatedBlocks);
-    setEditMode({
-      command: "add",
-      currentBlock,
-    });
   }
 
   function deleteBlock(currentBlock: Block) {
-    const previousBlock = currentBlock.ref
-      ?.previousElementSibling as HTMLElement;
-    if (previousBlock) {
-      const index = blocks.map((block) => block.id).indexOf(currentBlock.id);
+    if (blocks.length > 1) {
+      const index = blocks.map((b) => b.id).indexOf(currentBlock.id);
       const updatedBlocks = [...blocks];
       updatedBlocks.splice(index, 1);
       setBlocks(updatedBlocks);
-      setEditMode({
-        command: "delete",
-        currentBlock: previousBlock,
-      });
+      setCurrentBlockId(currentBlock.id);
     }
   }
 
@@ -79,6 +86,7 @@ const EditablePage = ({ blocks, setBlocks }: EditablePageProps) => {
       {blocks.map((block) => (
         <EditableBlock
           id={block.id}
+          position={blocks.map((b) => b.id).indexOf(block.id)}
           key={block.id}
           html={block.html}
           tag={block.tag}

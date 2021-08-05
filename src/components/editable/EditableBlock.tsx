@@ -2,14 +2,11 @@ import ContentEditable from "react-contenteditable";
 import { Block, Menu, Tag } from "@src/types/editable";
 import { KeyboardEvent, useEffect, useRef, useState } from "react";
 import React from "react";
-import SelectMenu from "@components/editablePage/SelectMenu";
+import SelectMenu from "@components/editable/SelectMenu";
 import { getCaretCoordinates, uid } from "@src/utils/utils";
 
-interface EditableBlockProps {
-  id: string;
-  html?: string;
-  tag?: string;
-  placeholder?: string;
+interface EditableBlockProps extends Block {
+  position: number;
   updateBlock: (block: Block) => void;
   addBlock: (block: Block, tag: Tag) => void;
   deleteBlock: (block: Block) => void;
@@ -19,7 +16,8 @@ const EditableBlock = (props: EditableBlockProps) => {
   const {
     id,
     html: initialHtml = "",
-    tag: initialTag = "p",
+    tag: initialTag,
+    position,
     updateBlock,
     addBlock,
     placeholder,
@@ -44,6 +42,7 @@ const EditableBlock = (props: EditableBlockProps) => {
       addBlock(
         {
           id,
+          tag: "p",
           ref: editableBlockElement,
         },
         {
@@ -122,6 +121,7 @@ const EditableBlock = (props: EditableBlockProps) => {
         html={html}
         innerRef={editableBlockRef}
         data-placeholder={placeholder}
+        data-position={position}
         tagName={tag}
         onChange={handleChange}
         onKeyDown={handleKeyDown}
