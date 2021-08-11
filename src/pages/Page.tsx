@@ -4,12 +4,12 @@ import Header from "@components/header";
 import { uid } from "@src/utils/utils";
 import Editable from "@components/editable";
 import { Blocks } from "@src/types/editable";
+import { tags } from "@components/common";
 
 const initialBlock = {
   id: uid(),
   html: "",
-  tag: "p",
-  placeholder: "",
+  ...tags.p,
 };
 
 const Page = () => {

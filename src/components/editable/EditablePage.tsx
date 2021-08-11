@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Block, Blocks } from "@src/types/editable";
+import { Block, Blocks, Tag } from "@src/types/editable";
 import { setCaretToEnd, uid } from "@src/utils/utils";
 import EditableBlock from "@components/editable/EditableBlock";
 import { usePrevious } from "@src/hooks/usePrevious";
@@ -49,22 +49,20 @@ const EditablePage = ({ blocks, setBlocks }: EditablePageProps) => {
       const updatedBlocks: Blocks = [...blocks];
       updatedBlocks[index] = {
         ...updatedBlocks[index],
-        tag: updatedBlock.tag,
-        html: updatedBlock.html,
+        ...updatedBlock,
       };
       return updatedBlocks;
     });
   }
 
-  function addBlock(currentBlock: Block) {
-    const { id, tag, placeholder, label } = currentBlock;
-    setCurrentBlockId(id);
+  function addBlock(currentBlock: Block, newTag: Tag) {
+    setCurrentBlockId(currentBlock.id);
     setBlocks((blocks: Blocks) => {
       const newBlock = {
         id: uid(),
         html: "",
-        tag: tag,
-        placeholder: placeholder ?? label,
+        ...newTag,
+        placeholder: newTag.placeholder ?? newTag.label,
       };
       const index = blocks.map((block) => block.id).indexOf(currentBlock.id);
       const updatedBlocks = [...blocks];

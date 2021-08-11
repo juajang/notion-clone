@@ -1,14 +1,15 @@
 import ContentEditable from "react-contenteditable";
-import { Block, Menu } from "@src/types/editable";
+import { Block, Menu, Tag } from "@src/types/editable";
 import { useEffect, useRef, useState } from "react";
 import React from "react";
 import SelectMenu from "@components/editable/SelectMenu";
 import { getCaretCoordinates } from "@src/utils/utils";
+import { tags } from "@components/common";
 
 interface EditableBlockProps extends Block {
   position: number;
   updateBlock: (block: Block) => void;
-  addBlock: (block: Block) => void;
+  addBlock: (currentBock: Block, newTag: Tag) => void;
   deleteBlock: (block: Block) => void;
 }
 
@@ -38,11 +39,13 @@ const EditableBlock = (props: EditableBlockProps) => {
       }
       if (!selectMenu.isOpen && e.key === "Enter" && previousKey !== "Shift") {
         e.preventDefault();
-        addBlock({
-          id,
-          tag: "p",
-          ref: editableBlockElement,
-        });
+        addBlock(
+          {
+            id,
+            ref: editableBlockElement,
+          },
+          tags.p
+        );
       }
       if (
         editableBlockRef.current.innerHTML.length === 0 &&
@@ -84,18 +87,19 @@ const EditableBlock = (props: EditableBlockProps) => {
     }
   }
 
-  function selectTag(selectedTag: string) {
+  function selectTag(selectedTag: Tag) {
     const innerHTML = editableBlockRef.current.innerHTML;
     updateBlock({
       id,
-      tag,
       html: innerHTML.substr(0, innerHTML.length - 1),
     });
-    addBlock({
-      id,
-      tag: selectedTag,
-      ref: editableBlockRef.current,
-    });
+    addBlock(
+      {
+        id,
+        ref: editableBlockRef.current,
+      },
+      selectedTag
+    );
   }
 
   useEffect(() => {

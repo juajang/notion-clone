@@ -1,36 +1,8 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { Popover } from "@src/components/common";
+import { Popover, tags } from "@src/components/common";
 import { Menu } from "@src/types/editable";
 import palette from "@src/utils/palette";
-
-const allowedTags = [
-  {
-    id: "page-title",
-    tag: "h1",
-    label: "제목1",
-    subLabel: "섹션 제목(대)",
-  },
-  {
-    id: "heading",
-    tag: "h2",
-    label: "제목2",
-    subLabel: "섹션 제목(중)",
-  },
-  {
-    id: "subheading",
-    tag: "h3",
-    label: "제목3",
-    subLabel: "섹션 제목(소)",
-  },
-  {
-    id: "paragraph",
-    tag: "p",
-    label: "텍스트",
-    subLabel: "일반 텍스트를 사용해 쓰기를 시작하세요.",
-    placeholder: "",
-  },
-];
 
 interface SelectMenuProps extends Menu {
   close: () => void;
@@ -40,7 +12,7 @@ interface SelectMenuProps extends Menu {
 const SelectMenu = (props: SelectMenuProps) => {
   const { xPosition, yPosition, selectItem, close } = props;
   const [command, setCommand] = useState("");
-  const [matchedItems, setMatchedItems] = useState(allowedTags);
+  const [matchedItems, setMatchedItems] = useState(Object.values(tags));
   const [selectedItemIndex, setSelectedItemIndex] = useState(0);
 
   useEffect(() => {
@@ -48,7 +20,7 @@ const SelectMenu = (props: SelectMenuProps) => {
       switch (e.key) {
         case "Enter":
           e.preventDefault();
-          selectItem(matchedItems[selectedItemIndex].tag);
+          selectItem(matchedItems[selectedItemIndex]);
           close();
           break;
         case "Backspace":
@@ -95,7 +67,7 @@ const SelectMenu = (props: SelectMenuProps) => {
             role="button"
             isSelected={selectedItemIndex === index}
             onClick={() => {
-              selectItem(item.tag);
+              selectItem(item);
               close();
             }}
           >

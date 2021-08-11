@@ -1,5 +1,4 @@
 export interface Tag {
-  id: string;
   tag?: string;
   label?: string;
   subLabel?: string;
@@ -7,6 +6,7 @@ export interface Tag {
 }
 
 export interface Block extends Tag {
+  id: string;
   html?: string;
   ref?: HTMLElement;
 }
