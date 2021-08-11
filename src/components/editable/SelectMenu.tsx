@@ -48,7 +48,8 @@ const SelectMenu = (props: SelectMenuProps) => {
       switch (e.key) {
         case "Enter":
           e.preventDefault();
-          selectItem(matchedItems[selectedItemIndex]);
+          selectItem(matchedItems[selectedItemIndex].tag);
+          close();
           break;
         case "Backspace":
           if (!command) {

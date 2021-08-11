@@ -1,9 +1,9 @@
 import ContentEditable from "react-contenteditable";
-import { Block, Menu, Tag } from "@src/types/editable";
+import { Block, Menu } from "@src/types/editable";
 import { useEffect, useRef, useState } from "react";
 import React from "react";
 import SelectMenu from "@components/editable/SelectMenu";
-import { getCaretCoordinates, uid } from "@src/utils/utils";
+import { getCaretCoordinates } from "@src/utils/utils";
 
 interface EditableBlockProps extends Block {
   position: number;
@@ -24,23 +24,19 @@ const EditableBlock = (props: EditableBlockProps) => {
     deleteBlock,
   } = props;
   const editableBlockRef = useRef<any>();
-  const [htmlBackup, setHtmlBackup] = useState("");
   const [previousKey, setPreviousKey] = useState("");
   const [selectMenu, setSelectMenu] = useState<Menu>({
     isOpen: false,
   });
 
   useEffect(() => {
-    const editableBlockElement = editableBlockRef.current;
-
-    const handleKeypress = (e: KeyboardEvent) => {
+    const handleKeydown = (e: KeyboardEvent) => {
+      const editableBlockElement = editableBlockRef.current;
+      setPreviousKey(e.key);
       if (e.isComposing) {
         return;
       }
-      if (e.key === "/") {
-        setHtmlBackup(editableBlockElement.innerHTML);
-      }
-      if (e.key === "Enter" && previousKey !== "Shift") {
+      if (!selectMenu.isOpen && e.key === "Enter" && previousKey !== "Shift") {
         e.preventDefault();
         addBlock({
           id,
@@ -58,15 +54,14 @@ const EditableBlock = (props: EditableBlockProps) => {
           ref: editableBlockElement,
         });
       }
-      setPreviousKey(e.key);
     };
 
-    editableBlockElement.addEventListener("keydown", handleKeypress);
-
+    const editableBlockElement = editableBlockRef.current;
+    editableBlockElement.addEventListener("keydown", handleKeydown);
     return () => {
-      editableBlockElement.removeEventListener("keydown", handleKeypress);
+      editableBlockElement.removeEventListener("keydown", handleKeydown);
     };
-  }, [addBlock, deleteBlock, id, previousKey]);
+  }, [addBlock, deleteBlock, id, previousKey, selectMenu.isOpen]);
 
   function openSelectMenu() {
     const { x, y } = getCaretCoordinates();
@@ -89,10 +84,16 @@ const EditableBlock = (props: EditableBlockProps) => {
     }
   }
 
-  function selectTag(tag: Tag) {
+  function selectTag(selectedTag: string) {
+    const innerHTML = editableBlockRef.current.innerHTML;
+    updateBlock({
+      id,
+      tag,
+      html: innerHTML.substr(0, innerHTML.length - 1),
+    });
     addBlock({
       id,
-      tag: tag.tag,
+      tag: selectedTag,
       ref: editableBlockRef.current,
     });
   }

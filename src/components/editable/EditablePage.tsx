@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { Block, Blocks, Tag } from "@src/types/editable";
+import { Block, Blocks } from "@src/types/editable";
 import { setCaretToEnd, uid } from "@src/utils/utils";
 import EditableBlock from "@components/editable/EditableBlock";
 import { usePrevious } from "@src/hooks/usePrevious";
 
 interface EditablePageProps {
   blocks: Blocks;
-  setBlocks: (blocks: Blocks) => void;
+  setBlocks: Function;
 }
 
 const EditablePage = ({ blocks, setBlocks }: EditablePageProps) => {
   const prevBlocks = usePrevious(blocks);
-  const [currentBlockId, setCurrentBlockId] = useState(blocks[0].id);
+  const [currentBlockId, setCurrentBlockId] = useState(blocks[0]?.id);
 
   useEffect(() => {
     if (!prevBlocks) {
@@ -44,38 +44,46 @@ const EditablePage = ({ blocks, setBlocks }: EditablePageProps) => {
   }, [blocks, currentBlockId, prevBlocks]);
 
   function updateBlock(updatedBlock: Block) {
-    const index = blocks.map((block) => block.id).indexOf(updatedBlock.id);
-    const updatedBlocks: Blocks = [...blocks];
-    updatedBlocks[index] = {
-      ...updatedBlocks[index],
-      tag: updatedBlock.tag,
-      html: updatedBlock.html,
-    };
-    setBlocks(updatedBlocks);
+    setBlocks((blocks: Blocks) => {
+      const index = blocks.map((block) => block.id).indexOf(updatedBlock.id);
+      const updatedBlocks: Blocks = [...blocks];
+      updatedBlocks[index] = {
+        ...updatedBlocks[index],
+        tag: updatedBlock.tag,
+        html: updatedBlock.html,
+      };
+      return updatedBlocks;
+    });
   }
 
   function addBlock(currentBlock: Block) {
-    setCurrentBlockId(currentBlock.id);
-    const newBlock = {
-      id: uid(),
-      html: "",
-      tag: currentBlock.tag,
-      placeholder: currentBlock.placeholder ?? currentBlock.label,
-    };
-    const index = blocks.map((block) => block.id).indexOf(currentBlock.id);
-    const updatedBlocks = [...blocks];
-    updatedBlocks.splice(index + 1, 0, newBlock);
-    setBlocks(updatedBlocks);
+    const { id, tag, placeholder, label } = currentBlock;
+    setCurrentBlockId(id);
+    setBlocks((blocks: Blocks) => {
+      const newBlock = {
+        id: uid(),
+        html: "",
+        tag: tag,
+        placeholder: placeholder ?? label,
+      };
+      const index = blocks.map((block) => block.id).indexOf(currentBlock.id);
+      const updatedBlocks = [...blocks];
+      updatedBlocks.splice(index + 1, 0, newBlock);
+      return updatedBlocks;
+    });
   }
 
   function deleteBlock(currentBlock: Block) {
     setCurrentBlockId(currentBlock.id);
-    if (blocks.length > 1) {
+    setBlocks((blocks: Blocks) => {
+      if (blocks.length === 1) {
+        return blocks;
+      }
       const index = blocks.map((b) => b.id).indexOf(currentBlock.id);
       const updatedBlocks = [...blocks];
       updatedBlocks.splice(index, 1);
-      setBlocks(updatedBlocks);
-    }
+      return updatedBlocks;
+    });
   }
 
   return (
