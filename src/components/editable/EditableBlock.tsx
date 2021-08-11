@@ -15,8 +15,8 @@ interface EditableBlockProps extends Block {
 const EditableBlock = (props: EditableBlockProps) => {
   const {
     id,
-    html: initialHtml = "",
-    tag: initialTag,
+    html = "",
+    tag,
     position,
     updateBlock,
     addBlock,
@@ -24,8 +24,6 @@ const EditableBlock = (props: EditableBlockProps) => {
     deleteBlock,
   } = props;
   const editableBlockRef = useRef<any>();
-  const [html, setHtml] = useState(initialHtml);
-  const [tag, setTag] = useState(initialTag);
   const [htmlBackup, setHtmlBackup] = useState("");
   const [previousKey, setPreviousKey] = useState("");
   const [selectMenu, setSelectMenu] = useState<Menu>({
@@ -92,7 +90,6 @@ const EditableBlock = (props: EditableBlockProps) => {
   }
 
   function selectTag(tag: Tag) {
-    setHtml(htmlBackup);
     addBlock({
       id,
       tag: tag.tag,
@@ -105,7 +102,6 @@ const EditableBlock = (props: EditableBlockProps) => {
   }, [html]);
 
   function handleChange(e: any) {
-    setHtml(e.target.value);
     updateBlock({
       html: e.target?.value,
       tag,
