@@ -11,7 +11,7 @@ interface EditablePageProps {
 
 const EditablePage = ({ blocks, setBlocks }: EditablePageProps) => {
   const prevBlocks = usePrevious(blocks);
-  const [currentBlockId, setCurrentBlockId] = useState("0");
+  const [currentBlockId, setCurrentBlockId] = useState(blocks[0].id);
 
   useEffect(() => {
     if (!prevBlocks) {
@@ -25,20 +25,17 @@ const EditablePage = ({ blocks, setBlocks }: EditablePageProps) => {
       const nextBlock: any = document.querySelector(
         `[data-position="${nextBlockPosition}"]`
       );
-      console.log(nextBlock, nextBlockPosition, "nex");
       if (nextBlock) {
-        console.log("focus");
         nextBlock.focus();
       }
     }
 
     // focus to previous block
     else if (prevBlocks.length - 1 === blocks.length) {
-      const lastBlockPosition = prevBlocks
-        .map((b) => b.id)
-        .indexOf(currentBlockId);
+      const lastBlockPosition =
+        prevBlocks.map((b) => b.id).indexOf(currentBlockId) - 1;
       const lastBlock = document.querySelector(
-        `[data-position="${lastBlockPosition - 1}"]`
+        `[data-position="${lastBlockPosition}"]`
       ) as HTMLElement;
       if (lastBlock) {
         setCaretToEnd(lastBlock);
@@ -57,13 +54,13 @@ const EditablePage = ({ blocks, setBlocks }: EditablePageProps) => {
     setBlocks(updatedBlocks);
   }
 
-  function addBlock(currentBlock: Block, tag: Tag) {
+  function addBlock(currentBlock: Block) {
     setCurrentBlockId(currentBlock.id);
     const newBlock = {
       id: uid(),
       html: "",
-      tag: tag.tag,
-      placeholder: tag.placeholder ?? tag.label,
+      tag: currentBlock.tag,
+      placeholder: currentBlock.placeholder ?? currentBlock.label,
     };
     const index = blocks.map((block) => block.id).indexOf(currentBlock.id);
     const updatedBlocks = [...blocks];
@@ -72,12 +69,12 @@ const EditablePage = ({ blocks, setBlocks }: EditablePageProps) => {
   }
 
   function deleteBlock(currentBlock: Block) {
+    setCurrentBlockId(currentBlock.id);
     if (blocks.length > 1) {
       const index = blocks.map((b) => b.id).indexOf(currentBlock.id);
       const updatedBlocks = [...blocks];
       updatedBlocks.splice(index, 1);
       setBlocks(updatedBlocks);
-      setCurrentBlockId(currentBlock.id);
     }
   }
 

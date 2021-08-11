@@ -12,7 +12,6 @@ const Editable: any = styled.main`
     padding: 3px 2px;
     white-space: pre-wrap;
     word-break: break-word;
-    background-color: ${palette.grey0};
     -webkit-text-fill-color: ${palette.grey3};
   }
 

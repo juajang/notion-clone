@@ -1,9 +1,14 @@
-export interface Block {
+export interface Tag {
   id: string;
-  html?: string;
   tag?: string;
-  ref?: HTMLElement;
+  label?: string;
+  subLabel?: string;
   placeholder?: string;
+}
+
+export interface Block extends Tag {
+  html?: string;
+  ref?: HTMLElement;
 }
 
 export type Blocks = Array<Block>;
@@ -17,12 +22,4 @@ export interface Menu {
   isOpen: boolean;
   xPosition?: number;
   yPosition?: number;
-}
-
-export interface Tag {
-  id: string;
-  tag: string;
-  label?: string;
-  subLabel?: string;
-  placeholder?: string;
 }

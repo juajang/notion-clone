@@ -1,6 +1,6 @@
 import ContentEditable from "react-contenteditable";
 import { Block, Menu, Tag } from "@src/types/editable";
-import { KeyboardEvent, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import React from "react";
 import SelectMenu from "@components/editable/SelectMenu";
 import { getCaretCoordinates, uid } from "@src/utils/utils";
@@ -8,7 +8,7 @@ import { getCaretCoordinates, uid } from "@src/utils/utils";
 interface EditableBlockProps extends Block {
   position: number;
   updateBlock: (block: Block) => void;
-  addBlock: (block: Block, tag: Tag) => void;
+  addBlock: (block: Block) => void;
   deleteBlock: (block: Block) => void;
 }
 
@@ -32,34 +32,43 @@ const EditableBlock = (props: EditableBlockProps) => {
     isOpen: false,
   });
 
-  function handleKeyDown(e: KeyboardEvent<HTMLDivElement>) {
+  useEffect(() => {
     const editableBlockElement = editableBlockRef.current;
-    if (e.key === "/") {
-      setHtmlBackup(editableBlockElement.innerHTML);
-    }
-    if (e.key === "Enter" && previousKey !== "Shift") {
-      e.preventDefault();
-      addBlock(
-        {
+
+    const handleKeypress = (e: KeyboardEvent) => {
+      if (e.isComposing) {
+        return;
+      }
+      if (e.key === "/") {
+        setHtmlBackup(editableBlockElement.innerHTML);
+      }
+      if (e.key === "Enter" && previousKey !== "Shift") {
+        e.preventDefault();
+        addBlock({
           id,
           tag: "p",
           ref: editableBlockElement,
-        },
-        {
-          id: uid(),
-          tag: "p",
-        }
-      );
-    }
-    if (editableBlockElement.innerHTML.length === 0 && e.key === "Backspace") {
-      e.preventDefault();
-      deleteBlock({
-        id,
-        ref: editableBlockElement,
-      });
-    }
-    setPreviousKey(e.key);
-  }
+        });
+      }
+      if (
+        editableBlockRef.current.innerHTML.length === 0 &&
+        e.key === "Backspace"
+      ) {
+        e.preventDefault();
+        deleteBlock({
+          id,
+          ref: editableBlockElement,
+        });
+      }
+      setPreviousKey(e.key);
+    };
+
+    editableBlockElement.addEventListener("keydown", handleKeypress);
+
+    return () => {
+      editableBlockElement.removeEventListener("keydown", handleKeypress);
+    };
+  }, [addBlock, deleteBlock, id, previousKey]);
 
   function openSelectMenu() {
     const { x, y } = getCaretCoordinates();
@@ -76,7 +85,7 @@ const EditableBlock = (props: EditableBlockProps) => {
     });
   }
 
-  function handleKeyUp(e: KeyboardEvent<HTMLDivElement>) {
+  function handleKeyUp(e: any) {
     if (e.key === "/") {
       openSelectMenu();
     }
@@ -84,13 +93,11 @@ const EditableBlock = (props: EditableBlockProps) => {
 
   function selectTag(tag: Tag) {
     setHtml(htmlBackup);
-    addBlock(
-      {
-        id,
-        ref: editableBlockRef.current,
-      },
-      tag
-    );
+    addBlock({
+      id,
+      tag: tag.tag,
+      ref: editableBlockRef.current,
+    });
   }
 
   useEffect(() => {
@@ -100,7 +107,7 @@ const EditableBlock = (props: EditableBlockProps) => {
   function handleChange(e: any) {
     setHtml(e.target.value);
     updateBlock({
-      html: e.target.value,
+      html: e.target?.value,
       tag,
       id,
     });
@@ -124,7 +131,6 @@ const EditableBlock = (props: EditableBlockProps) => {
         data-position={position}
         tagName={tag}
         onChange={handleChange}
-        onKeyDown={handleKeyDown}
         onKeyUp={handleKeyUp}
       />
     </>

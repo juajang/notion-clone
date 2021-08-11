@@ -78,7 +78,6 @@ const SelectMenu = (props: SelectMenuProps) => {
           break;
       }
     };
-
     window.addEventListener("keydown", handleKeydown);
     return () => {
       window.removeEventListener("keydown", handleKeydown);
