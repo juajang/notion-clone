@@ -13,11 +13,6 @@ export interface Block extends Tag {
 
 export type Blocks = Array<Block>;
 
-export interface EditMode {
-  command: "add" | "delete" | "update" | "";
-  currentBlock?: Block | HTMLElement;
-}
-
 export interface Menu {
   isOpen: boolean;
   xPosition?: number;

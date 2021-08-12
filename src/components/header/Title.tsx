@@ -19,6 +19,7 @@ const Input = styled.input`
   cursor: text;
   white-space: pre-wrap;
   word-break: break-word;
+  padding: 10px 0;
   font-weight: 700;
   line-height: 1.2;
   font-size: 40px;

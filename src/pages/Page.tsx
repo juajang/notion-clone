@@ -20,6 +20,7 @@ const Page = () => {
       <Content>
         <Header>
           <Header.Title />
+          <Header.Date />
         </Header>
         <Editable>
           <Editable.Page blocks={blocks} setBlocks={setBlocks} />
