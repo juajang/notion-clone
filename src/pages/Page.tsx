@@ -1,20 +1,9 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
 import Header from "@components/header";
-import { uid } from "@src/utils/utils";
 import Editable from "@components/editable";
-import { Blocks } from "@src/types/editable";
-import { tags } from "@components/common";
-
-const initialBlock = {
-  id: uid(),
-  html: "",
-  ...tags.p,
-};
 
 const Page = () => {
-  const [blocks, setBlocks] = useState<Blocks>([initialBlock]);
-
   return (
     <Container>
       <Content>
@@ -23,7 +12,7 @@ const Page = () => {
           <Header.Date />
         </Header>
         <Editable>
-          <Editable.Page blocks={blocks} setBlocks={setBlocks} />
+          <Editable.Page />
         </Editable>
       </Content>
     </Container>
