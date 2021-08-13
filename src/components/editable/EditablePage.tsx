@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { Block, Blocks, Tag } from "@src/types/editable";
-import { setCaretToEnd, uid } from "@src/utils/utils";
+import { setCaretToEnd, setCaretToPrevious, setCaretToNext, uid } from "@src/utils/utils";
 import EditableBlock from "@components/editable/EditableBlock";
 import { usePrevious } from "@src/hooks/usePrevious";
 import { tags } from "@components/common";
@@ -16,39 +16,53 @@ const EditablePage = () => {
   const [currentBlockId, setCurrentBlockId] = useState(blocks[0]?.id);
   const prevBlocks = usePrevious(blocks);
 
-  useEffect(() => {
-    const setFocus = () => {
+  const setFocusOnNextBlock = useCallback(
+    (currentBlockId: string) => {
+      const nextBlockPosition =
+        blocks.map((b) => b.id).indexOf(currentBlockId) + 1;
+      const nextBlock: any = document.querySelector(
+        `[data-position="${nextBlockPosition}"]`
+      );
+      if (nextBlock) {
+        nextBlock.focus();
+      }
+    },
+    [blocks]
+  );
+
+  const setFocusOnPreviousBlock = useCallback(
+    (currentBlockId: string) => {
       if (!prevBlocks) {
         return;
       }
-
-      // focus to new block
-      if (prevBlocks.length + 1 === blocks.length) {
-        const nextBlockPosition =
-          blocks.map((b) => b.id).indexOf(currentBlockId) + 1;
-        const nextBlock: any = document.querySelector(
-          `[data-position="${nextBlockPosition}"]`
-        );
-        if (nextBlock) {
-          nextBlock.focus();
-        }
+      const lastBlockPosition =
+        prevBlocks.map((b) => b.id).indexOf(currentBlockId) - 1;
+      const lastBlock = document.querySelector(
+        `[data-position="${lastBlockPosition}"]`
+      ) as HTMLElement;
+      if (lastBlock) {
+        setCaretToEnd(lastBlock);
       }
+    },
+    [prevBlocks]
+  );
 
-      // focus to previous block
-      else if (prevBlocks.length - 1 === blocks.length) {
-        const lastBlockPosition =
-          prevBlocks.map((b) => b.id).indexOf(currentBlockId) - 1;
-        const lastBlock = document.querySelector(
-          `[data-position="${lastBlockPosition}"]`
-        ) as HTMLElement;
-        if (lastBlock) {
-          setCaretToEnd(lastBlock);
-        }
-      }
-    };
-
-    setFocus();
-  }, [blocks, currentBlockId, prevBlocks]);
+  useEffect(() => {
+    if (!prevBlocks) {
+      return;
+    }
+    if (prevBlocks.length + 1 === blocks.length) {
+      setFocusOnNextBlock(currentBlockId);
+    } else if (prevBlocks.length - 1 === blocks.length) {
+      setFocusOnPreviousBlock(currentBlockId);
+    }
+  }, [
+    blocks.length,
+    currentBlockId,
+    prevBlocks,
+    setFocusOnNextBlock,
+    setFocusOnPreviousBlock,
+  ]);
 
   const updateBlock = useCallback((updatedBlock: Block) => {
     setBlocks((blocks: Blocks) => {
@@ -104,6 +118,8 @@ const EditablePage = () => {
           updateBlock={updateBlock}
           addBlock={addBlock}
           deleteBlock={deleteBlock}
+          setCaretToPrevious={setCaretToPrevious}
+          setCaretToNext={setCaretToNext}
         />
       ))}
     </>

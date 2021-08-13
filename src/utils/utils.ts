@@ -15,6 +15,53 @@ export const setCaretToEnd = (element: HTMLElement) => {
   element?.focus();
 };
 
+export const getCaretOffset = (element: Element) => {
+  let offset = 0;
+  const selection: Selection | null = window.getSelection();
+  if (selection?.rangeCount && selection.rangeCount !== 0) {
+    const range = selection.getRangeAt(0).cloneRange();
+    range.collapse(false);
+    offset = range.startOffset;
+  }
+  return offset;
+}
+
+export const setCaretToPrevious = (element: Element) => {
+  const selection: Selection | null = window.getSelection();
+  const range = document.createRange();
+  const previousNode: any = element.previousElementSibling;
+  const textNode = previousNode?.firstChild;
+
+  const currentCaretOffset = getCaretOffset(element)
+  const offset = currentCaretOffset <= textNode.length ? currentCaretOffset : textNode.length;
+
+  if (!previousNode || !textNode) {
+    return;
+  }
+  range.setStart(textNode, offset);
+  range.collapse(true);
+  selection?.removeAllRanges();
+  selection?.addRange(range);
+};
+
+export const setCaretToNext = (element: Element) => {
+  const selection: Selection | null = window.getSelection();
+  const range = document.createRange();
+  const previousNode: any = element.nextElementSibling;
+  const textNode = previousNode?.firstChild;
+
+  const currentCaretOffset = getCaretOffset(element)
+  const offset = currentCaretOffset <= textNode.length ? currentCaretOffset : textNode.length;
+
+  if (!previousNode || !textNode) {
+    return;
+  }
+  range.setStart(textNode, offset);
+  range.collapse(true);
+  selection?.removeAllRanges();
+  selection?.addRange(range);
+};
+
 export const getCaretCoordinates = () => {
   let x, y;
   const selection: Selection | null = window.getSelection();
@@ -27,5 +74,5 @@ export const getCaretCoordinates = () => {
       y = rect.top;
     }
   }
-  return { x, y };
+  return {x, y};
 };

@@ -11,6 +11,8 @@ interface EditableBlockProps extends Block {
   updateBlock: (block: Block) => void;
   addBlock: (currentBock: Block, newTag: Tag) => void;
   deleteBlock: (block: Block) => void;
+  setCaretToPrevious: (element: Element) => void;
+  setCaretToNext: (elment: Element) => void;
 }
 
 const EditableBlock = (props: EditableBlockProps) => {
@@ -23,6 +25,8 @@ const EditableBlock = (props: EditableBlockProps) => {
     addBlock,
     placeholder,
     deleteBlock,
+    setCaretToPrevious,
+    setCaretToNext,
   } = props;
   const editableBlockRef = useRef<any>();
   const [previousKey, setPreviousKey] = useState("");
@@ -31,13 +35,14 @@ const EditableBlock = (props: EditableBlockProps) => {
   });
 
   useEffect(() => {
-    const handleKeydown = (e: KeyboardEvent) => {
+    const handleKeydown = (e: any) => {
       const editableBlockElement = editableBlockRef.current;
-      setPreviousKey(e.key);
+      const { key } = e;
+      setPreviousKey(key);
       if (e.isComposing) {
         return;
       }
-      if (!selectMenu.isOpen && e.key === "Enter" && previousKey !== "Shift") {
+      if (!selectMenu.isOpen && key === "Enter" && previousKey !== "Shift") {
         e.preventDefault();
         addBlock(
           {
@@ -47,15 +52,20 @@ const EditableBlock = (props: EditableBlockProps) => {
           tags.p
         );
       }
-      if (
-        editableBlockRef.current.innerHTML.length === 0 &&
-        e.key === "Backspace"
-      ) {
+      if (editableBlockElement.innerHTML.length === 0 && key === "Backspace") {
         e.preventDefault();
         deleteBlock({
           id,
           ref: editableBlockElement,
         });
+      }
+      if (!selectMenu.isOpen && key === "ArrowUp") {
+        e.preventDefault();
+        setCaretToPrevious(editableBlockElement);
+      }
+      if (!selectMenu.isOpen && key === "ArrowDown") {
+        e.preventDefault();
+        setCaretToNext(editableBlockElement);
       }
     };
 
@@ -64,7 +74,13 @@ const EditableBlock = (props: EditableBlockProps) => {
     return () => {
       editableBlockElement.removeEventListener("keydown", handleKeydown);
     };
-  }, [addBlock, deleteBlock, id, previousKey, selectMenu.isOpen]);
+  }, [
+    addBlock,
+    deleteBlock,
+    id,
+    previousKey,
+    selectMenu.isOpen,
+  ]);
 
   function openSelectMenu() {
     const { x, y } = getCaretCoordinates();
@@ -127,6 +143,7 @@ const EditableBlock = (props: EditableBlockProps) => {
       )}
       <ContentEditable
         html={html}
+        className={`e-${position}`}
         innerRef={editableBlockRef}
         data-placeholder={placeholder}
         data-position={position}
