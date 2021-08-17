@@ -12,10 +12,10 @@ export const setCaretToEnd = (element: HTMLElement) => {
   range?.collapse(false);
   selection?.removeAllRanges();
   selection?.addRange(range);
-  element?.focus();
+  element.focus();
 };
 
-export const getCaretOffset = (element: Element) => {
+export const getCaretOffset = () => {
   let offset = 0;
   const selection: Selection | null = window.getSelection();
   if (selection?.rangeCount && selection.rangeCount !== 0) {
@@ -26,41 +26,21 @@ export const getCaretOffset = (element: Element) => {
   return offset;
 }
 
-export const setCaretToPrevious = (element: Element) => {
+export const setCaretOffset = (element: Element, offset: number) => {
   const selection: Selection | null = window.getSelection();
   const range = document.createRange();
-  const previousNode: any = element.previousElementSibling;
-  const textNode = previousNode?.firstChild;
+  const textNode = element?.firstChild?.textContent;
 
-  const currentCaretOffset = getCaretOffset(element)
-  const offset = currentCaretOffset <= textNode.length ? currentCaretOffset : textNode.length;
-
-  if (!previousNode || !textNode) {
+  if (!element || !element?.firstChild || !textNode) {
     return;
   }
-  range.setStart(textNode, offset);
+
+  const rangeOffset = offset <= textNode?.length ? offset : textNode.length;
+  range.setStart(element.firstChild, rangeOffset);
   range.collapse(true);
   selection?.removeAllRanges();
   selection?.addRange(range);
-};
-
-export const setCaretToNext = (element: Element) => {
-  const selection: Selection | null = window.getSelection();
-  const range = document.createRange();
-  const previousNode: any = element.nextElementSibling;
-  const textNode = previousNode?.firstChild;
-
-  const currentCaretOffset = getCaretOffset(element)
-  const offset = currentCaretOffset <= textNode.length ? currentCaretOffset : textNode.length;
-
-  if (!previousNode || !textNode) {
-    return;
-  }
-  range.setStart(textNode, offset);
-  range.collapse(true);
-  selection?.removeAllRanges();
-  selection?.addRange(range);
-};
+}
 
 export const getCaretCoordinates = () => {
   let x, y;
@@ -76,3 +56,53 @@ export const getCaretCoordinates = () => {
   }
   return {x, y};
 };
+
+export const setCaretToLeft = (element: Element) => {
+  const textNode = element?.firstChild?.textContent;
+  const currentOffset = getCaretOffset();
+  const previousElement = element.previousElementSibling as HTMLElement
+
+  // 왼쪽 끝에 caret이 있는 경우, 위의 block 끝으로 이동
+  if (textNode?.length === 0 || currentOffset === 0) {
+    if (previousElement) {
+      setCaretOffset(previousElement, previousElement?.firstChild?.textContent?.length as number)
+    }
+  } else {
+    setCaretOffset(element, currentOffset - 1)
+  }
+};
+
+export const setCaretToRight = (element: Element) => {
+  const textNode = element?.firstChild?.textContent;
+  const currentOffset = getCaretOffset();
+
+  // 오른쪽 끝에 caret이 있는 경우, 아래의 block 처음으로 이동
+  if (currentOffset === textNode?.length) {
+    const nextElement = element.nextElementSibling as HTMLElement
+    if (nextElement) {
+      setCaretOffset(nextElement, 0);
+    }
+  } else {
+    setCaretOffset(element, currentOffset + 1);
+  }
+}
+
+export const setCaretToUp = (element: Element) => {
+  const previousElement = element?.previousElementSibling;
+  const textNode: any = previousElement?.firstChild;
+  const currentOffset = getCaretOffset();
+
+  if (previousElement) {
+    setCaretOffset(previousElement, currentOffset);
+  }
+}
+
+export const setCaretToDown = (element: Element) => {
+  const nextElement = element?.nextElementSibling;
+  const textNode: any = nextElement?.firstChild;
+  const currentOffset = getCaretOffset();
+
+  if (nextElement) {
+    setCaretOffset(nextElement, currentOffset);
+  }
+}

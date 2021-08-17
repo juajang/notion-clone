@@ -1,9 +1,17 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { Block, Blocks, Tag } from "@src/types/editable";
-import { setCaretToEnd, setCaretToPrevious, setCaretToNext, uid } from "@src/utils/utils";
+import React, {useCallback, useEffect, useState} from "react";
+import {Block, Blocks, Tag} from "@src/types/editable";
+import {
+  setCaretToEnd,
+  uid,
+  getCaretOffset,
+  setCaretToLeft,
+  setCaretToRight,
+  setCaretToDown,
+  setCaretToUp
+} from "@src/utils/utils";
 import EditableBlock from "@components/editable/EditableBlock";
-import { usePrevious } from "@src/hooks/usePrevious";
-import { tags } from "@components/common";
+import {usePrevious} from "@src/hooks/usePrevious";
+import {tags} from "@components/common";
 
 const initialBlock = {
   id: uid(),
@@ -118,8 +126,10 @@ const EditablePage = () => {
           updateBlock={updateBlock}
           addBlock={addBlock}
           deleteBlock={deleteBlock}
-          setCaretToPrevious={setCaretToPrevious}
-          setCaretToNext={setCaretToNext}
+          handleArrowDown={setCaretToDown}
+          handleArrowLeft={setCaretToLeft}
+          handleArrowRight={setCaretToRight}
+          handleArrowUp={setCaretToUp}
         />
       ))}
     </>

@@ -1,18 +1,20 @@
 import ContentEditable from "react-contenteditable";
-import { Block, Menu, Tag } from "@src/types/editable";
-import { useEffect, useRef, useState } from "react";
+import {Block, Menu, Tag} from "@src/types/editable";
+import {useEffect, useRef, useState} from "react";
 import React from "react";
 import SelectMenu from "@components/editable/SelectMenu";
-import { getCaretCoordinates } from "@src/utils/utils";
-import { tags } from "@components/common";
+import {getCaretCoordinates} from "@src/utils/utils";
+import {tags} from "@components/common";
 
 interface EditableBlockProps extends Block {
   position: number;
   updateBlock: (block: Block) => void;
   addBlock: (currentBock: Block, newTag: Tag) => void;
   deleteBlock: (block: Block) => void;
-  setCaretToPrevious: (element: Element) => void;
-  setCaretToNext: (elment: Element) => void;
+  handleArrowUp: Function
+  handleArrowDown: Function
+  handleArrowLeft: Function
+  handleArrowRight: Function
 }
 
 const EditableBlock = (props: EditableBlockProps) => {
@@ -25,8 +27,10 @@ const EditableBlock = (props: EditableBlockProps) => {
     addBlock,
     placeholder,
     deleteBlock,
-    setCaretToPrevious,
-    setCaretToNext,
+    handleArrowDown,
+    handleArrowLeft,
+    handleArrowRight,
+    handleArrowUp
   } = props;
   const editableBlockRef = useRef<any>();
   const [previousKey, setPreviousKey] = useState("");
@@ -37,7 +41,7 @@ const EditableBlock = (props: EditableBlockProps) => {
   useEffect(() => {
     const handleKeydown = (e: any) => {
       const editableBlockElement = editableBlockRef.current;
-      const { key } = e;
+      const {key} = e;
       setPreviousKey(key);
       if (e.isComposing) {
         return;
@@ -61,11 +65,19 @@ const EditableBlock = (props: EditableBlockProps) => {
       }
       if (!selectMenu.isOpen && key === "ArrowUp") {
         e.preventDefault();
-        setCaretToPrevious(editableBlockElement);
+        handleArrowUp(editableBlockElement);
       }
       if (!selectMenu.isOpen && key === "ArrowDown") {
         e.preventDefault();
-        setCaretToNext(editableBlockElement);
+        handleArrowDown(editableBlockElement);
+      }
+      if (!selectMenu.isOpen && key === "ArrowLeft") {
+        e.preventDefault();
+        handleArrowLeft(editableBlockElement);
+      }
+      if (!selectMenu.isOpen && key === "ArrowRight") {
+        e.preventDefault();
+        handleArrowRight(editableBlockElement);
       }
     };
 
@@ -83,7 +95,7 @@ const EditableBlock = (props: EditableBlockProps) => {
   ]);
 
   function openSelectMenu() {
-    const { x, y } = getCaretCoordinates();
+    const {x, y} = getCaretCoordinates();
     setSelectMenu({
       isOpen: true,
       xPosition: x,
