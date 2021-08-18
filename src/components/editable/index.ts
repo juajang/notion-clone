@@ -8,6 +8,8 @@ const Editable: any = styled.main`
     calc(96px + env(safe-area-inset-left));
 
   [contenteditable="true"] {
+    min-height: 1em;
+    display: block;
     margin: 5px 0;
     padding: 3px 2px;
     white-space: pre-wrap;

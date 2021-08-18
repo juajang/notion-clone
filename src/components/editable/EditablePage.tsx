@@ -4,11 +4,8 @@ import {
   setCaretToEnd,
   uid,
   getCaretOffset,
-  setCaretToLeft,
-  setCaretToRight,
-  setCaretToDown,
-  setCaretToUp
 } from "@src/utils/utils";
+import useCaret from "@src/hooks/useCaret";
 import EditableBlock from "@components/editable/EditableBlock";
 import {usePrevious} from "@src/hooks/usePrevious";
 import {tags} from "@components/common";
@@ -22,6 +19,12 @@ const initialBlock = {
 const EditablePage = () => {
   const [blocks, setBlocks] = useState<Blocks>([initialBlock]);
   const [currentBlockId, setCurrentBlockId] = useState(blocks[0]?.id);
+  const {
+    setCaretToLeft,
+    setCaretToRight,
+    setCaretToDown,
+    setCaretToUp
+  } = useCaret();
   const prevBlocks = usePrevious(blocks);
 
   const setFocusOnNextBlock = useCallback(
