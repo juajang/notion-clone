@@ -1,5 +1,5 @@
-import {useEffect, useState} from "react";
-import {setCaretOffset, getCaretOffset} from "@src/utils/utils";
+import { useEffect, useState } from "react";
+import { getCaretOffset, getSelectionRangeInfo, setCaretOffset } from "@src/utils/utils";
 
 interface Caret {
   offset: number;
@@ -8,57 +8,79 @@ interface Caret {
 
 export default function useCaret() {
   const [caret, setCaret] = useState<Caret>({
-    offset: 0,
-  })
+    offset: 0
+  });
 
   useEffect(() => {
     if (caret.container) {
-      setCaretOffset(caret.container, caret.offset)
+      setCaretOffset(caret.container, caret.offset);
     }
-  }, [caret])
+  }, [caret]);
 
-  const setCaretToLeft = (element: HTMLElement) => {
-    const textNode = element?.firstChild?.textContent;
+  const setCaretToLeft = (e: any, element: HTMLElement) => {
+    const selection: Selection | null = window.getSelection();
+    const { isStart, isEnd } = getSelectionRangeInfo(element);
+    const range = document.createRange();
+
     const currentOffset = getCaretOffset();
-    const previousElement = element.previousElementSibling as HTMLElement
+    const currentNode = selection?.anchorNode as HTMLElement
+    const textContent = currentNode?.textContent;
 
-    // 왼쪽 끝에 caret이 있는 경우, 위의 block 끝으로 이동
-    if (textNode?.length === 0 || currentOffset === 0) {
-      if (previousElement) {
-        const prevOffset = previousElement?.firstChild?.textContent?.length as number;
+    if (currentOffset == 0) {
+      if (isStart && element.previousElementSibling) {
+        const previousElement = element.previousElementSibling.lastChild as HTMLElement;
         setCaret({
           container: previousElement,
-          offset: prevOffset
-        })
+          offset: previousElement.textContent?.length as number,
+        });
+      } else if (currentNode?.previousSibling) {
+        const previousSibling = currentNode?.previousSibling as HTMLElement;
+        setCaret({
+          container: previousSibling,
+          offset: previousSibling.textContent?.length as number -  1,
+        });
       }
     } else {
       setCaret({
-        container: element,
+        container: currentNode,
         offset: currentOffset - 1
-      })
+      });
     }
   };
 
-  const setCaretToRight = (element: HTMLElement) => {
-    const textNode = element?.firstChild?.textContent;
-    const currentOffset = getCaretOffset();
 
-    // 오른쪽 끝에 caret이 있는 경우, 아래의 block 처음으로 이동
-    if (currentOffset === textNode?.length) {
-      const nextElement = element.nextElementSibling as HTMLElement
-      if (nextElement) {
+  const setCaretToRight = (e: any, element: HTMLElement) => {
+    const selection: Selection | null = window.getSelection();
+    const { isStart, isEnd } = getSelectionRangeInfo(element);
+    const range = document.createRange();
+
+    const currentOffset = getCaretOffset();
+    const currentNode = selection?.anchorNode as HTMLElement
+    const textContent = currentNode?.textContent;
+
+    if (!currentNode || !textContent) {
+      return;
+    }
+
+    if (currentOffset === textContent.length) {
+      if (isEnd && element.nextElementSibling) {
         setCaret({
-          container: nextElement,
-          offset: 0,
-        })
+          container: element.nextElementSibling.firstChild as HTMLElement,
+          offset: 0
+        });
+      } else {
+        setCaret({
+          container: currentNode?.nextSibling as HTMLElement,
+          offset: 1
+        });
       }
     } else {
-      setCaret({
-        container: element,
-        offset: currentOffset + 1
-      })
+      setCaret((prevState) => ({
+        container: currentNode,
+        offset: prevState.offset + 1
+      }));
     }
-  }
+  };
 
   const setCaretToUp = (element: Element) => {
     const previousElement = element?.previousElementSibling as HTMLElement;
@@ -66,12 +88,12 @@ export default function useCaret() {
     // 위나 아래로 이동시 이전의 caret offset 유지
     if (previousElement) {
       setCaret((prevState) => ({
-        ...prevState,
-          container: previousElement,
+          ...prevState,
+          container: previousElement
         })
-      )
+      );
     }
-  }
+  };
 
   const setCaretToDown = (element: Element) => {
     const nextElement = element?.nextElementSibling as HTMLElement;

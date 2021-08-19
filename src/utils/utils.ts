@@ -26,21 +26,37 @@ export const getCaretOffset = () => {
   return offset;
 }
 
+export const getSelectionRangeInfo = (element: HTMLElement) => {
+  let isStart = false, isEnd = false;
+  let selectionRange, testRange;
+  const selection: Selection | null = window.getSelection();
+
+  if (selection?.rangeCount) {
+    selectionRange = selection.getRangeAt(0);
+    testRange = selectionRange.cloneRange();
+
+    testRange.selectNodeContents(element);
+    testRange.setEnd(selectionRange.startContainer, selectionRange.startOffset);
+    isStart = (testRange.toString() == "");
+
+    testRange.selectNodeContents(element);
+    testRange.setStart(selectionRange.endContainer, selectionRange.endOffset);
+    isEnd = (testRange.toString() == "");
+  }
+
+  return { isStart: isStart, isEnd: isEnd };
+};
+
+
 export const setCaretOffset = (element: HTMLElement, offset: number) => {
   const selection: Selection | null = window.getSelection();
   const range = document.createRange();
-  const textNode = element?.firstChild?.textContent;
 
-  if (element?.firstChild && textNode) {
-    const rangeOffset = offset <= textNode?.length ? offset : textNode.length
-    range.setStart(element.firstChild, rangeOffset);
-    range.collapse(true);
-    selection?.removeAllRanges();
-    selection?.addRange(range);
-  } else {
-    setCaretToEnd(element);
-  }
-}
+  range.setStart(element, offset);
+  range.collapse(true);
+  selection?.removeAllRanges();
+  selection?.addRange(range);
+};
 
 export const getCaretCoordinates = () => {
   let x, y;

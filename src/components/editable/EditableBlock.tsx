@@ -1,7 +1,6 @@
 import ContentEditable from "react-contenteditable";
 import {Block, Menu, Tag} from "@src/types/editable";
-import {useEffect, useRef, useState} from "react";
-import React from "react";
+import React, {useEffect, useRef, useState} from "react";
 import SelectMenu from "@components/editable/SelectMenu";
 import {getCaretCoordinates} from "@src/utils/utils";
 import {tags} from "@components/common";
@@ -43,10 +42,10 @@ const EditableBlock = (props: EditableBlockProps) => {
       const editableBlockElement = editableBlockRef.current;
       const {key} = e;
       setPreviousKey(key);
-      if (e.isComposing) {
+      if (e.isComposing || selectMenu.isOpen) {
         return;
       }
-      if (!selectMenu.isOpen && key === "Enter" && previousKey !== "Shift") {
+      if (key === "Enter" && previousKey !== "Shift") {
         e.preventDefault();
         addBlock(
           {
@@ -56,28 +55,24 @@ const EditableBlock = (props: EditableBlockProps) => {
           tags.p
         );
       }
-      if (editableBlockElement.innerHTML.length === 0 && key === "Backspace") {
+      else if (editableBlockElement.innerHTML.length === 0 && key === "Backspace") {
         e.preventDefault();
         deleteBlock({
           id,
           ref: editableBlockElement,
         });
-      }
-      if (!selectMenu.isOpen && key === "ArrowUp") {
+      } else if (key === "ArrowUp") {
         e.preventDefault();
         handleArrowUp(editableBlockElement);
-      }
-      if (!selectMenu.isOpen && key === "ArrowDown") {
+      } else if (key === "ArrowDown") {
         e.preventDefault();
         handleArrowDown(editableBlockElement);
-      }
-      if (!selectMenu.isOpen && key === "ArrowLeft") {
+      } else if (key === "ArrowLeft") {
         e.preventDefault();
-        handleArrowLeft(editableBlockElement);
-      }
-      if (!selectMenu.isOpen && key === "ArrowRight") {
+        handleArrowLeft(e, editableBlockElement);
+      } else if (key === "ArrowRight") {
         e.preventDefault();
-        handleArrowRight(editableBlockElement);
+        handleArrowRight(e, editableBlockElement);
       }
     };
 
