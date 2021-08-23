@@ -48,11 +48,16 @@ export const getSelectionRangeInfo = (element: HTMLElement) => {
 };
 
 
-export const setCaretOffset = (element: HTMLElement, offset: number) => {
+export const setCaretOffset = (element: Node, offset: number) => {
   const selection: Selection | null = window.getSelection();
   const range = document.createRange();
 
-  range.setStart(element, offset);
+  let rangeOffset = 0;
+  if (element.textContent) {
+    rangeOffset = offset < element.textContent.length ? offset : element.textContent.length
+  }
+
+  range.setStart(element, rangeOffset);
   range.collapse(true);
   selection?.removeAllRanges();
   selection?.addRange(range);
