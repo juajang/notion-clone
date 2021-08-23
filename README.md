@@ -10,8 +10,7 @@ The code of this repository is based on [konstantinmuenster/notion-clone](https:
 - Arrow Keys (Use arrow keys to navigate blocks)
  
 ## To do
-- placeholder 위치 자연스럽게 바꾸기
-- Enter를 누른 위치가 제일 왼쪽이면 해당 element 이전 위치에 새로 추가되도록 수정 
+- caret의 현재 위치에 따라 block 추가 기능 다르게 구현하기
 
 ## Tech Stack
 - React
