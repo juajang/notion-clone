@@ -17,13 +17,8 @@ const Editable: any = styled.main`
     -webkit-text-fill-color: ${palette.grey3};
   }
 
-  [contentEditable="true"]:empty:before {
+  [contentEditable="true"]:empty:focus:before {
     content: attr(data-placeholder);
-    -webkit-text-fill-color: ${palette.grey1};
-  }
-
-  p[contentEditable="true"]:empty:last-child:before {
-    content: '명령어 사용 시 "/"를 입력하세요';
     -webkit-text-fill-color: ${palette.grey1};
   }
 

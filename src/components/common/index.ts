@@ -20,7 +20,7 @@ export const tags = {
     tag: "p",
     label: "텍스트",
     subLabel: "일반 텍스트를 사용해 쓰기를 시작하세요.",
-    placeholder: "",
+    placeholder: '명령어 사용 시 "/"를 입력하세요',
   },
 };
 
