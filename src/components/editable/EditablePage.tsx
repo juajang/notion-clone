@@ -27,6 +27,17 @@ const EditablePage = () => {
   } = useCaret();
   const prevBlocks = usePrevious(blocks);
 
+  useEffect(() => {
+    const setFocusOnFirstBlock = () => {
+      const firstBlock: HTMLElement | null = document.querySelector(
+        `[data-position="0"]`
+      );
+      firstBlock?.focus();
+    }
+
+    setFocusOnFirstBlock();
+  }, []);
+
   const setFocusOnNextBlock = useCallback(
     (currentBlockId: string) => {
       const nextBlockPosition =
